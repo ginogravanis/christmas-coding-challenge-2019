@@ -4,32 +4,6 @@ import List
 import String
 
 
-
-{- Write a function that takes two strings as arguments, s and
-   p, and returns a boolean denoting whether s matches p.
-
-   p is a sequence of any number of the following:
-       1. a-z - which stands for itself
-       2. . - which matches any character
-       3. * - which matches 0 or more occurrences of the
-              previous single character
-
-   Examples:
-
-       s = "aba", p = "ab" => False
-
-       s = "aa", p = "a*" => True
-
-       s = "ab", p = ".*" => True
-
-       s = "ab", p = "." => False
-
-       s = "aab", p = "c*a*b" => True
-
-       s = "aaa", p = "a*" => True
--}
-
-
 type Token
     = This Char
     | Any
