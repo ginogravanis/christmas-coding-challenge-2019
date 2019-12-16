@@ -7,4 +7,4 @@ Requires at least Elm v0.19: `npm install elm`
 ```Elm
 $ elm repl
 $ import Regex
-$ Regex.isMatch "string" "regex"
+$ Regex.match "regex" "string"

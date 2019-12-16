@@ -10,13 +10,13 @@ type Token
     | Group Token
 
 
-isMatch : String -> String -> Bool
-isMatch candidate pattern =
+match : String -> String -> Bool
+match pattern candidate  =
     let
         regex =
             lex pattern
     in
-    isMatchHelp (String.toList candidate) regex
+    matchHelp regex (String.toList candidate)
 
 
 lex : String -> List Token
@@ -52,40 +52,40 @@ lexHelp chars tokens =
                     lexHelp cs (This c :: tokens)
 
 
-isMatchHelp : List Char -> List Token -> Bool
-isMatchHelp chars tokens =
-    case ( chars, tokens ) of
+matchHelp : List Token -> List Char -> Bool
+matchHelp tokens chars =
+    case ( tokens, chars ) of
         -- The empty pattern matches the empty string.
         ( [], [] ) ->
             True
 
         -- Not all characters were consumed. No match.
-        ( _, [] ) ->
+        ( [], _ ) ->
             False
 
         -- Not all tokens were consumed. If the next token is a
         -- group, remove it and try again. In all other cases, no
         -- match.
-        ( [], t :: ts ) ->
+        ( t :: ts, [] ) ->
             case t of
                 Group _ ->
-                    isMatchHelp [] ts
+                    matchHelp ts []
 
                 _ ->
                     False
 
         -- Default case
-        ( c :: cs, t :: ts ) ->
+        ( t :: ts, c :: cs ) ->
             case t of
                 Any ->
                     -- Consume first character and token.
-                    isMatchHelp cs ts
+                    matchHelp ts cs
 
                 This char ->
                     -- If token and character match, consume both and
                     -- continue. Otherwise, no match.
                     if c == char then
-                        isMatchHelp cs ts
+                        matchHelp ts cs
 
                     else
                         False
@@ -93,8 +93,8 @@ isMatchHelp chars tokens =
                 Group token ->
                     -- Either ignore group or prepend the wrapped
                     -- token and try matching it.
-                    isMatchHelp chars ts
-                        || isMatchHelp chars (token :: tokens)
+                    matchHelp ts chars
+                        || matchHelp (token :: tokens) chars
 
 
 stripGroups : List Token -> List Token
